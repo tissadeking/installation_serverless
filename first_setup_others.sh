@@ -1,12 +1,12 @@
-\#!/bin/sh
+#!/bin/sh
 
 minikube kubectl -- get po -A
 
-sudo curl -LO "https://dl.k8s.io/release/\$(curl -L -s https://dl.k8s.io/release/stable.txt)\newline /bin/linux/amd64/kubectl"
+sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
-sudo curl -LO "https://dl.k8s.io/\$(curl -L -s https://dl.k8s.io/release/stable.txt)\newline /bin/linux/amd64/kubectl.sha256"
+sudo curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
 
-echo "\$(<kubectl.sha256) kubectl" | sha256sum --check
+echo "$(<kubectl.sha256) kubectl" | sha256sum --check
 
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
@@ -28,14 +28,14 @@ arkade install openfaas
 
 kubectl rollout status -n openfaas deploy/gateway
 
-kubectl port-forward -n openfaas svc/gateway 8080:8080 \&
+kubectl port-forward -n openfaas svc/gateway 8080:8080 &
 
 kubectl -n openfaas get deployments -l "release=openfaas, app=openfaas"
 
 kubectl get svc -o wide gateway-external -n openfaas
 
-PASSWORD=\$(kubectl get secret -n openfaas basic-auth -o jsonpath="\{.data.basic-auth-password\}" | base64 --decode; echo)
+PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
 
-echo -n \$PASSWORD | faas-cli login --username admin –password-stdin
+echo -n $PASSWORD | faas-cli login --username admin -password-stdin
 
-echo \$PASSWORD
+echo $PASSWORD
